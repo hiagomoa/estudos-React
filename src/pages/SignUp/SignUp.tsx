@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 import {Container, Content, Background} from './styles';
 import { FiLogIn } from 'react-icons/fi'
-import { api } from '../services/api';
+import { api } from '../../services/api';
 
 import logo from '../assets/Proffy.svg'
 
@@ -12,6 +12,12 @@ export function SignIn(){
     function handleActionLogin(event:FormEvent){
         event.preventDefault();
         console.log(email, password);
+        const response = api.post('/auth/search', {
+            email: email,
+            password: password
+        })
+        console.log(response);
+
     }
 
     return(

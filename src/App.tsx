@@ -1,4 +1,4 @@
-import { SignIn } from "./pages/SignIn"
+import { SignIn } from "./pages/SignIn/SignIn"
 import { GlobalStyle } from "./styles/global"
 
 export function App() {
