@@ -9,14 +9,13 @@ export function SignIn(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function handleActionLogin(event:FormEvent){
+   async function handleActionLogin(event:FormEvent){
         event.preventDefault();
         console.log(email, password);
-        const response = api.post('/auth/search', {
+        await api.post('/auth/search', {
             email: email,
             password: password
         })
-        console.log(response);
 
     }
 

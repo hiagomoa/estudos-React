@@ -1,14 +1,26 @@
 import { FormEvent, useEffect, useState } from 'react'
+import Modal from 'react-modal';
 import {Container, Content, Background} from './styles';
 import { FiLogIn } from 'react-icons/fi'
 import { api } from '../../services/api';
 
 import logo from '../../assets/Proffy.svg'
 
+Modal.setAppElement('#root');
 export function SignIn(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [responseApi, setResponseApi] = useState({});
+    const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
+
+    
+    function handleOpenModal(){
+        setModalSignInisOpen(true)
+    }
+
+    function handleCloseModal(){
+        setModalSignInisOpen(false)
+    }
 
     async function handleActionLogin(event:FormEvent){
         event.preventDefault();
@@ -19,7 +31,8 @@ export function SignIn(){
         }).then(function (response) {
             const retorno = JSON.stringify(response.data);
             setResponseApi(retorno);
-            console.log("BOA: "+ retorno)            
+            handleOpenModal();
+                     
         }).catch(function (error) {
             console.log(" triste");
           });
@@ -57,6 +70,12 @@ export function SignIn(){
                     <FiLogIn/>
                     Criar conta
                 </a>
+                <Modal
+                isOpen={modalSignInisOpen}
+                onRequestClose={handleCloseModal}
+                >
+                    <h2>Login foi bem sucedido</h2>
+                </Modal>
             </Content>
             <Background/>
         </Container>
