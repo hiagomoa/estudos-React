@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
 import Modal from 'react-modal';
+import { Link } from 'react-router-dom';
 import {Container, Content, Background} from './styles';
 import { FiLogIn } from 'react-icons/fi'
 import { api } from '../../services/api';
@@ -66,13 +67,15 @@ export function SignIn(){
 
                     <a href="forgot">Esqueci minha senha</a>
                 </form>
-                <a href="">
+                <Link to="/signup">
                     <FiLogIn/>
                     Criar conta
-                </a>
+                </Link>
                 <Modal
                 isOpen={modalSignInisOpen}
                 onRequestClose={handleCloseModal}
+                overlayClassName="react-modal-overlay"
+                className="react-modal-content"
                 >
                     <h2>Login foi bem sucedido</h2>
                 </Modal>
