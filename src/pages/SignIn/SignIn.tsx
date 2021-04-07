@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState, useContext } from 'react'
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
 import {Container, Content, Background} from './styles';
@@ -6,6 +6,7 @@ import { FiLogIn } from 'react-icons/fi'
 import { api } from '../../services/api';
 
 import logo from '../../assets/Proffy.svg'
+import { ContextLogin } from '../../context/ContextLogin';
 
 Modal.setAppElement('#root');
 export function SignIn(){
@@ -13,6 +14,8 @@ export function SignIn(){
     const [password, setPassword] = useState('');
     const [responseApi, setResponseApi] = useState({});
     const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
+
+    const {dados, loginUser} = useContext(ContextLogin);
 
     
     function handleOpenModal(){
@@ -26,17 +29,9 @@ export function SignIn(){
     async function handleActionLogin(event:FormEvent){
         event.preventDefault();
         console.log(email, password);
-        await api.post('/auth/search', {
-            email: email,
-            password: password
-        }).then(function (response) {
-            const retorno = JSON.stringify(response.data);
-            setResponseApi(retorno);
-            handleOpenModal();
-                     
-        }).catch(function (error) {
-            console.log(" triste");
-          });
+
+       loginUser(email, password);
+       console.log("O VALOR DO DATA: "+ dados);
 
     }
 
