@@ -1,9 +1,10 @@
 import { FormEvent, useState } from 'react'
 import {Container, Content, Background} from './styles';
 import { Link } from 'react-router-dom';
+import Modal from 'react-modal';
 
 import { FiLogIn } from 'react-icons/fi'
-import { api } from '../../services/api';
+import { apiCadastro } from '../../services/apiCadastro';
 
 import logo from '../../assets/Proffy.svg'
 
@@ -11,15 +12,31 @@ export function SignUp(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
+    const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
 
+
+    function handleOpenModal(){
+        setModalSignInisOpen(true)
+    }
+
+    function handleCloseModal(){
+        setModalSignInisOpen(false)
+    }
 
    async function handleActionLogin(event:FormEvent){
         event.preventDefault();
         console.log(email, password);
-        await api.post('/auth/search', {
-            email: email,
-            password: password
-        })
+        await apiCadastro.post('/users/all1', {
+            "email":"hiagosilva@gmail.com",
+            "name": "Hiago Silva",
+            "password": "aaaaaaaaaaaa"
+        }).then(function (response) {
+            const retorno = response.data;
+            handleOpenModal();
+            console.log(retorno);
+        }).catch(function (error) {
+            console.log(" triste");
+        });
 
     }
 
@@ -33,7 +50,7 @@ export function SignUp(){
 
                     <input 
                     placeholder="Nome"
-                    value={email}
+                    value={name}
                     onChange={event => setName(event.target.value)}
                     />
 
@@ -57,6 +74,14 @@ export function SignUp(){
                     <FiLogIn/>
                     Fazer Login
                 </Link>
+                <Modal
+                isOpen={modalSignInisOpen}
+                onRequestClose={handleCloseModal}
+                overlayClassName="react-modal-overlay"
+                className="react-modal-content"
+                >
+                    <h2>Login foi bem sucedido</h2>
+                </Modal>
             </Content>
             
         </Container>

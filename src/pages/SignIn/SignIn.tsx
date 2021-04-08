@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState, useContext } from 'react'
 import Modal from 'react-modal';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {Container, Content, Background} from './styles';
 import { FiLogIn } from 'react-icons/fi'
 import { api } from '../../services/api';
@@ -15,9 +15,11 @@ export function SignIn(){
     const [responseApi, setResponseApi] = useState({});
     const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
 
-    const {dados, loginUser} = useContext(ContextLogin);
+    const {user, logged, loginUser} = useContext(ContextLogin);
+    const history = useHistory();
 
-    
+
+    console.log("TTTTT" +user );
     function handleOpenModal(){
         setModalSignInisOpen(true)
     }
@@ -30,14 +32,17 @@ export function SignIn(){
         event.preventDefault();
         console.log(email, password);
 
-       loginUser(email, password);
-       console.log("O VALOR DO DATA: "+ dados);
-
+       await loginUser(email, password);
+       //console.warn("O VALOR DO DATA: "+ dados[0].data.email);
+       
     }
 
     useEffect(()=>{
-        console.warn("USEEFFECT: " + responseApi)
-    }, [responseApi])
+        if(logged== true){
+            console.warn("TA AQUI")
+            history.push("/dashboard")
+        }
+    },[logged])
 
     return(
         <Container>
@@ -61,6 +66,7 @@ export function SignIn(){
                     <button type="submit">Entrar</button>
 
                     <a href="forgot">Esqueci minha senha</a>
+                    
                 </form>
                 <Link to="/signup">
                     <FiLogIn/>
