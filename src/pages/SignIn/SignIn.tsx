@@ -8,7 +8,7 @@ import { api } from '../../services/api';
 import logo from '../../assets/Proffy.svg'
 import { ContextLogin } from '../../context/ContextLogin';
 
-Modal.setAppElement('#root');
+//Modal.setAppElement('#root');
 export function SignIn(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -49,7 +49,7 @@ export function SignIn(){
             <Content>
                 <img src={logo} alt="MyLogo"/>
                 <form onSubmit={handleActionLogin}>
-                    <h1>Faça seu logon</h1>
+                    <h1 data-testid="titulo">Faça seu logon</h1>
 
                     <input 
                     placeholder="Email"
@@ -68,10 +68,10 @@ export function SignIn(){
                     <a href="forgot">Esqueci minha senha</a>
                     
                 </form>
-                <Link to="/signup">
+                {/* <Link to="/signup">
                     <FiLogIn/>
                     Criar conta
-                </Link>
+                </Link> */}
                 <Modal
                 isOpen={modalSignInisOpen}
                 onRequestClose={handleCloseModal}
