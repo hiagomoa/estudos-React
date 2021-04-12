@@ -5,6 +5,7 @@ import {Container, Content, Background} from './styles';
 import { FiLogIn } from 'react-icons/fi'
 import { api } from '../../services/api';
 
+
 import logo from '../../assets/Proffy.svg'
 import { ContextLogin } from '../../context/ContextLogin';
 
@@ -15,11 +16,11 @@ export function SignIn(){
     const [responseApi, setResponseApi] = useState({});
     const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
 
-    const {user, logged, loginUser} = useContext(ContextLogin);
+    const {logged, loginUser} = useContext(ContextLogin);
     const history = useHistory();
 
 
-    console.log("TTTTT" +user );
+   //console.log("TTTTT" +user );
     function handleOpenModal(){
         setModalSignInisOpen(true)
     }
@@ -38,7 +39,7 @@ export function SignIn(){
     }
 
     useEffect(()=>{
-        if(logged== true){
+        if(logged == true){
             console.warn("TA AQUI")
             history.push("/dashboard")
         }
@@ -68,10 +69,10 @@ export function SignIn(){
                     <a href="forgot">Esqueci minha senha</a>
                     
                 </form>
-                {/* <Link to="/signup">
+                 <Link to="/signup">
                     <FiLogIn/>
                     Criar conta
-                </Link> */}
+                </Link> 
                 <Modal
                 isOpen={modalSignInisOpen}
                 onRequestClose={handleCloseModal}

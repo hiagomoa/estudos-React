@@ -11,7 +11,6 @@ interface Data {
         name: String | "";
         email: String | "";
     }
-
 }
 
 interface ContextLoginProvider {
