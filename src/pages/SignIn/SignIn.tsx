@@ -16,7 +16,8 @@ export function SignIn(){
     const [responseApi, setResponseApi] = useState({});
     const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
 
-    const {logged, loginUser} = useContext(ContextLogin);
+    const { logged, loginUser } = useContext(ContextLogin);
+    //const useAuth = useContext(ContextLogin)
     const history = useHistory();
 
 
@@ -32,13 +33,14 @@ export function SignIn(){
     async function handleActionLogin(event:FormEvent){
         event.preventDefault();
         console.log(email, password);
-
+       // useAuth.loginUser(email, password)
        await loginUser(email, password);
        //console.warn("O VALOR DO DATA: "+ dados[0].data.email);
        
     }
 
     useEffect(()=>{
+        console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: "+logged)
         if(logged == true){
             console.warn("TA AQUI")
             history.push("/dashboard")
@@ -54,12 +56,14 @@ export function SignIn(){
 
                     <input 
                     placeholder="Email"
+                    data-testid="id-email"
                     value={email}
                     onChange={event => setEmail(event.target.value)}
                     />
 
                     <input type="password" 
                     placeholder="Senha"
+                    data-testid="id-senha"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                     />

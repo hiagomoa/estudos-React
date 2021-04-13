@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState, useContext } from 'react';
 import { api } from '../services/api';
 import { useHistory } from 'react-router-dom';
 
@@ -63,7 +63,7 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
 
             localStorage.setItem('@MeuSite:token', token);
             localStorage.setItem('@MeuSite:user', JSON.stringify(data));
-            let logged = true;
+            let logged = true;  {children}
 
             setDados({ token,logged, data });
             console.log("RETORNO " + retorno)
@@ -82,3 +82,9 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
         </ContextLogin.Provider>
     )
 }
+
+// export function useAuth(){
+//     const context = useContext(ContextLogin);
+  
+//     return context;
+//   }

@@ -1,66 +1,60 @@
-// import React from 'react';
-// import { render, fireEvent, waitFor } from '@testing-library/react';
-// import { SignIn } from './SignIn'
+import React from 'react';
+import { render, fireEvent, waitFor, getByTestId } from '@testing-library/react';
+import {renderHook} from '@testing-library/react-hooks'
+import { SignIn } from './SignIn'
+import {ContextLogin, ContextLoginProvider} from '../../context/ContextLogin'
 
 
-// const mockedHistoryPush = jest.fn();
-// const mockedSignIn = jest.fn();
+const mockedHistoryPush = jest.fn();
+const mockedSignIn = jest.fn();
 
-// jest.mock('react-router-dom', () => {
-//     return {
-//       useHistory: () => ({
-//         push: mockedHistoryPush,
-//       }),
-//       Link: ({ children }: { children: React.ReactNode }) => children,
-//     };
-//   });
+jest.mock('react-router-dom', () => {
+    return {
+      useHistory: () => ({
+        push: mockedHistoryPush,
+      }),
+      Link: ({ children }: { children: React.ReactNode }) => children,
+    };
+  });
   
-//   jest.mock('../../context/ContextLogin', () => {
-//     return {
-//         loginUser: () => (mockedSignIn),
-//         logged: true
-//     };
-//   });
+  
 
-//   jest.mock(React.useContext, )
+//   describe("TESTE", ()=>{
+//     const {result}  = renderHook(() => ContextLoginProvider);
+//     console.log("MEU RESULT:" + result.current)
+//   })
+
+ // jest.mock(React.useContext, )
  
 
-// describe("SignInUnitTest", () => {
-//     let realUseContext
-//     let useContextMock
-//     beforeEach(() => {
-//         realUseContext = React.useContext;
-//         useContextMock = React.useContext = ()=>({logged: true,
-// })
-//     });
-//     // beforeEach(() => {
+describe("SignInUnitTest", () => {
+    let realUseContext
+    let useContextMock
+    beforeEach(() => {
+        realUseContext = React.useContext;
+        
+       //useContextMock = React.useContext = ()=>({logged: true})
+    });
 
-//     //     render(
-//     //         <SignIn />
-//     //     )
-//     //     }
-//     // )
-//     // it("Validar o título", () => {
-//     //     const element1: HTMLElement[] =  screen.queryAllByText("llllllllllllllll");
-//     //     const element2 =  screen.queryByTestId("titulo")
-//     //     console.log(element2?.textContent);
-//     //     expect(element2).toBeTruthy();
-//     //     expect(element2?.textContent).toEqual("Faça seu logon");
-//     // })
-//     it("VAlidar", async ()=>{
-//         const { getByPlaceholderText, getByText } = render(<SignIn />);
 
-//     const emailField = getByPlaceholderText('E-mail');
-//     const passwordField = getByPlaceholderText('Senha');
-//     const buttonElement = getByText('Entrar');
+    it("VAlidar", async ()=>{
+        const { getByPlaceholderText, getByText} = render(<SignIn />);
+        const { result, waitForNextUpdate } = renderHook(ContextLoginProvider);
+       //
 
-//     fireEvent.change(emailField, { target: { value: 'johndoe@example.com' } });
-//     fireEvent.change(passwordField, { target: { value: '123456' } });
+    const emailField = getByPlaceholderText('Email');
+    const passwordField = getByPlaceholderText('Senha');
+    const buttonElement = getByText('Entrar');
+    // const emailField = screen.getAllByTestId("id-email")
+    // const passwordField = screen.getAllByTestId("id-email")
 
-//     fireEvent.click(buttonElement);
-//     await waitFor(() => {
-//         expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
-//       });
+    fireEvent.change(emailField, { target: { value: 'johndoe@example.com' } });
+    fireEvent.change(passwordField, { target: { value: '123456' } });
 
-//     })
-// })
+    fireEvent.click(buttonElement);
+    // await waitFor(() => {
+    //     expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
+    //   });
+
+    })
+})
