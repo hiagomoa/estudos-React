@@ -1,9 +1,12 @@
 import React from 'react';
-import { render, fireEvent, waitFor, getByTestId } from '@testing-library/react';
+import { render, fireEvent, waitFor, getByTestId, act, screen } from '@testing-library/react';
+import MockAdapter from 'axios-mock-adapter';
 import {renderHook} from '@testing-library/react-hooks'
-import { SignIn } from './SignIn'
-import {ContextLogin, ContextLoginProvider} from '../../context/ContextLogin'
+import {ContextLogin, ContextLoginProvider, useAuth} from '../../context/ContextLogin'
+import {api} from  '../../services/api'
+import {SignIn} from '../SignIn/SignIn'
 
+const apiMock = new MockAdapter(api);
 
 const mockedHistoryPush = jest.fn();
 const mockedSignIn = jest.fn();
@@ -17,44 +20,41 @@ jest.mock('react-router-dom', () => {
     };
   });
   
-  
-
-//   describe("TESTE", ()=>{
-//     const {result}  = renderHook(() => ContextLoginProvider);
-//     console.log("MEU RESULT:" + result.current)
-//   })
-
- // jest.mock(React.useContext, )
- 
+  jest.mock('../../context/ContextLogin', () => {
+    return {
+      useAuth: () => ({
+        loginUser:jest.fn().mockReturnValue,
+        logged:true
+      }),
+    };
+  }); 
 
 describe("SignInUnitTest", () => {
-    let realUseContext
-    let useContextMock
-    beforeEach(() => {
-        realUseContext = React.useContext;
-        
-       //useContextMock = React.useContext = ()=>({logged: true})
-    });
-
-
     it("VAlidar", async ()=>{
-        const { getByPlaceholderText, getByText} = render(<SignIn />);
-        const { result, waitForNextUpdate } = renderHook(ContextLoginProvider);
-       //
+        const { result } = renderHook(() => useAuth());
+        const {logged, loginUser} = useAuth() 
+         console.log("Ola Mundo: "+JSON.stringify(result.current.logged))
+         act(() => {
+            render(<SignIn />)
+          })       
+    
+    const emailField = screen.getByPlaceholderText('Email');
+    const passwordField = screen.getByPlaceholderText('Senha');
+    const buttonElement = screen.getByText('Entrar');
 
-    const emailField = getByPlaceholderText('Email');
-    const passwordField = getByPlaceholderText('Senha');
-    const buttonElement = getByText('Entrar');
-    // const emailField = screen.getAllByTestId("id-email")
-    // const passwordField = screen.getAllByTestId("id-email")
 
-    fireEvent.change(emailField, { target: { value: 'johndoe@example.com' } });
-    fireEvent.change(passwordField, { target: { value: '123456' } });
+    fireEvent.change(emailField, { target: { value: 'hiagof@ciandt.com' } });
+    fireEvent.change(passwordField, { target: { value: '1234' } });
 
     fireEvent.click(buttonElement);
-    // await waitFor(() => {
-    //     expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
-    //   });
+    console.log("Foi: "+result.current.loginUser);
+    
+    await waitFor(() => {
+        expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
+        
+      });
+      
+    
 
     })
 })

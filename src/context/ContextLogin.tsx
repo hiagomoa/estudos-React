@@ -53,7 +53,6 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
 
     async function loginUser(email: String, password: String) {
 
-        console.log("DENTRO DO LOGIN: "+email + " "+password)
         await api.post('/auth/searcher', {
             "email": email,
             "password": password
@@ -63,15 +62,16 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
 
             localStorage.setItem('@MeuSite:token', token);
             localStorage.setItem('@MeuSite:user', JSON.stringify(data));
-            let logged = true;  {children}
+            let logged = true; 
 
             setDados({ token,logged, data });
-            console.log("RETORNO " + retorno)
+            console.log("RETORNO " + JSON.stringify(retorno))
             
            
         }).catch(function (error) {
+            let logged = false; 
+            setDados({logged} as AuthState);
             console.log(" triste");
-           
         });
 
     }
@@ -83,8 +83,8 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
     )
 }
 
-// export function useAuth(){
-//     const context = useContext(ContextLogin);
+export function useAuth(){
+    const context = useContext(ContextLogin);
   
-//     return context;
-//   }
+    return context;
+  }

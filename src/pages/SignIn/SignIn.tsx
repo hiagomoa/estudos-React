@@ -7,7 +7,7 @@ import { api } from '../../services/api';
 
 
 import logo from '../../assets/Proffy.svg'
-import { ContextLogin } from '../../context/ContextLogin';
+import { useAuth }  from '../../context/ContextLogin';
 
 //Modal.setAppElement('#root');
 export function SignIn(){
@@ -16,8 +16,10 @@ export function SignIn(){
     const [responseApi, setResponseApi] = useState({});
     const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
 
-    const { logged, loginUser } = useContext(ContextLogin);
+
+    //const { logged, loginUser } = useContext(ContextLogin);
     //const useAuth = useContext(ContextLogin)
+    const {logged, loginUser}=useAuth()
     const history = useHistory();
 
 
@@ -35,14 +37,18 @@ export function SignIn(){
         console.log(email, password);
        // useAuth.loginUser(email, password)
        await loginUser(email, password);
+        console.log("LLLLLLLLLLLLLLll")
        //console.warn("O VALOR DO DATA: "+ dados[0].data.email);
        
     }
 
     useEffect(()=>{
+        if (logged == false){
+            handleOpenModal()
+        }
         console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: "+logged)
         if(logged == true){
-            console.warn("TA AQUI")
+            console.log("TA AQUI")
             history.push("/dashboard")
         }
     },[logged])
