@@ -53,6 +53,7 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
 
     async function loginUser(email: String, password: String) {
 
+        console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk")
         await api.post('/auth/searcher', {
             "email": email,
             "password": password
