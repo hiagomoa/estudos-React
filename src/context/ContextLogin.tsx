@@ -65,7 +65,7 @@ export function ContextLoginProvider({ children }: ContextLoginProvider) {
             localStorage.setItem('@MeuSite:user', JSON.stringify(data));
             let logged = true; 
 
-            setDados({ token,logged, data });
+            //setDados({ token, data });
             console.log("RETORNO " + JSON.stringify(retorno))
             
            

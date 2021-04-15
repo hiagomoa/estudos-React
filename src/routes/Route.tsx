@@ -1,10 +1,10 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import {
   Route as ReactDOMRoute,
   RouteProps as ReactDOMRouteProps,
   Redirect,
 } from 'react-router-dom';
-import {ContextLogin} from '../context/ContextLogin'
+import { ContextLogin } from '../context/ContextLogin'
 
 interface RouteProps extends ReactDOMRouteProps {
   isPrivate?: boolean;
@@ -16,7 +16,7 @@ const Route: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
-    const {user, logged, loginUser} = useContext(ContextLogin);
+  const { user, logged, loginUser } = useContext(ContextLogin);
 
 
   return (
@@ -31,11 +31,11 @@ const Route: React.FC<RouteProps> = ({
               pathname: isPrivate ? '/' : '/dashboard',
               state: { from: location },
             }}
-            />
-          );
-        }}
-      />
-    );
-  };
-  
-  export default Route;
+          />
+        );
+      }}
+    />
+  );
+};
+
+export default Route;

@@ -1,29 +1,49 @@
-import { FormEvent, useEffect, useState, useContext } from 'react'
+import { FormEvent, useEffect, useState, useContext, useCallback } from 'react'
 import Modal from 'react-modal';
 import { Link, useHistory } from 'react-router-dom';
 import { Container, Content, Background } from './styles';
 import { FiLogIn } from 'react-icons/fi'
 import { api } from '../../services/api';
+import { useDispatch, useSelector } from 'react-redux'
 
 
 import logo from '../../assets/Proffy.svg'
-import { useAuth } from '../../context/ContextLogin';
+import { log_user } from '../../store/modules/auth/actions';
+import { Data } from '../../store/modules/auth/types';
+import { IState } from '../../store';
 
+interface AuthState {
+    token: string;
+    data: object;
+}
 //Modal.setAppElement('#root');
 export function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [responseApi, setResponseApi] = useState({});
+    const [data, setData] = useState(false);
     const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
 
+    const auth = useSelector<IState, Data>(state => state.auth);
+    const dispatch = useDispatch();
 
-    //const { logged, loginUser } = useContext(ContextLogin);
-    //const useAuth = useContext(ContextLogin)
-    const { logged, loginUser } = useAuth()
+    console.log("REDUX: " +  auth.token)
+    const [dados, setDados] = useState<AuthState>(() => {
+        const token = localStorage.getItem('@MeuSite:token');
+        const data = localStorage.getItem('@MeuSite:user');
+
+        if (token && data) {
+            //const logged = true;
+            //return { store.auth.token, logged, data: JSON.parse(data) };
+            return {token:token, data:JSON.parse(data) }
+        }
+        return {} as AuthState;
+    });
     const history = useHistory();
 
 
     //console.log("TTTTT" +user );
+   
+
     function handleOpenModal() {
         setModalSignInisOpen(true)
     }
@@ -35,26 +55,40 @@ export function SignIn() {
     async function handleActionLogin(event: FormEvent) {
         event.preventDefault();
         console.log("ENTROUUUU")
-        //console.log(email, password);
-        // useAuth.loginUser(email, password)
         await loginUser(email, password);
-        if(logged===false){
-            handleOpenModal()
-        }
-        //console.log("LLLLLLLLLLLLLLll")
-        //console.warn("O VALOR DO DATA: "+ dados[0].data.email);
-
+        history.push("/dashboard")
     }
 
-    useEffect(() => {
-        // console.log("valor do logged: " + logged)
-        // if (logged == false) {
-        //     handleOpenModal()
-        // }
-        if (logged == true) {
-            history.push("/dashboard")
-        }
-    }, [logged])
+   const handleAddLoginUser = useCallback((data:Data)=>{
+        dispatch(log_user(data))
+    }, [dispatch])
+
+    async function loginUser(email: String, password: String) {
+
+        await api.post('/auth/searcher', {
+            "email": email,
+            "password": password
+        }).then(function (response) {
+            const retorno = response.data;
+            const { token, data } = response.data;
+            console.log("OPAAAAAAA " + token)
+            localStorage.setItem('@MeuSite:token', token);
+            localStorage.setItem('@MeuSite:user', JSON.stringify(data));
+            handleAddLoginUser({token, data})
+        }).catch(function (error) {
+            console.log(" triste");
+        });
+        
+    }
+    // useEffect(() => {
+    //     // console.log("valor do logged: " + logged)
+    //     // if (logged == false) {
+    //     //     handleOpenModal()
+    //     // }
+    //     if (logged == true) {
+    //         history.push("/dashboard")
+    //     }
+    // }, [logged])
 
     return (
         <Container>
