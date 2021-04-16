@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ComponentType} from 'react';
 import ReactDOM from 'react-dom';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -7,10 +7,17 @@ import Modal from 'react-modal'
 
 import { render, fireEvent, waitFor, getByTestId, act, screen, waitForElement, queryByText, getByText } from '@testing-library/react';
 import MockAdapter from 'axios-mock-adapter';
-import { renderHook } from '@testing-library/react-hooks'
-import { useAuth, ContextLogin } from '../../context/ContextLogin'
 import { api } from '../../services/api'
 import { SignIn } from '../SignIn/SignIn'
+import { createStore } from 'redux';
+import reducer from '../../store/modules/auth/reducer';
+import { Provider } from 'react-redux';
+import { Data } from '../../store/modules/auth/types';
+
+interface IProps {
+  children: React.ComponentType | undefined;
+}
+
 const apiMock = new MockAdapter(api);
 
 const mockedHistoryPush = jest.fn();
@@ -26,28 +33,43 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../context/ContextLogin', () => {
-  let logged:boolean;
-  return {
-    useAuth: () => ({
-      loginUser: jest.fn().mockImplementation(()=>{logged=!logged}),
-      logged
-    }),
-  };
-});
+// jest.mock('../../context/ContextLogin', () => {
+//   let logged:boolean;
+//   return {
+//     useAuth: () => ({
+//       loginUser: jest.fn().mockImplementation(()=>{logged=!logged}),
+//       logged
+//     }),
+//   };
+// });
+
+const INITIAL_STATE: Data = {
+  token: "",
+  data: {
+      id: "",
+      name: "",
+      email: "",
+  }
+}
+
+const store = createStore(reducer, INITIAL_STATE);
+
+const Wrapper = ({ children}: IProps) => (
+  <Provider store={store}>{children}</Provider>
+);
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("SignInUnitTest", () => {
-  /* it("VAlidar", async () => {
-     const { result } = renderHook(() => useAuth());
-     const { logged, loginUser } = useAuth()
-     
-   
+   it("Preencher email e senha de forma correta", async () => { 
+
+    const apiResponse = {"token":"VIXXXXXXXXXXXXXXX","data":{"id":"123567","name":"Hiago55555","email":"hiagof@ciandt.com","password":"1234"}}
      //console.log("Ola Mundo: " + JSON.stringify(result.current.logged))
-     act(() => {
-       render(<SignIn />)
-     })
+     apiMock.onPost('auth/searcher').reply(200, apiResponse)
+    
+     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
+     
+     render(<SignIn />, { wrapper: Wrapper as React.ComponentType});
      const emailField = screen.getByPlaceholderText('Email');
      const passwordField = screen.getByPlaceholderText('Senha');
      const buttonElement = screen.getByText('Entrar');
@@ -63,61 +85,8 @@ describe("SignInUnitTest", () => {
      });
    })
  
-   */
-  let container: any;
-
-  beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-  });
-  it("ERRO com Modal", () => {
-
-
-    apiMock.onPost('auth/searcher').networkError()
-
-    act(() => {
-      ReactDOM.render(<SignIn />, container)
-    })
-
-    //const { result } = renderHook(() => useAuth());
-
-    const emailField = container.querySelector('#input1');
-    const passwordField = container.querySelector('#input2');
-    const buttonElement = container.querySelector('button');
-    console.log(buttonElement)
-    console.log(emailField)
-
-    // fireEvent.change(emailField, { target: { value: 'hiagof@ciandt.com' } });
-    // fireEvent.change(passwordField, { target: { value: '1234' } });
-
-    //console.log("ola1"+screen.getByText('Login foi mal sucedido').innerText);
-    //expect(screen.getByText('Login foi mal sucedido')).toBeFalsy()
-    act(() => {
-
-      // fireEvent.click(buttonElement);
-      buttonElement.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      
-    })
-    setTimeout(()=>{
-      console.log("ola"+container.querySelector('#input5'));
-    },1000);
-  
    
 
-    // const wrapper = shallow(<SignIn />);
-    // console.log(wrapper.find(Modal).getElement().props)
-
-
-
-
-
-    //     console.log(wrapper.find(Modal).getElement().props)
-    // //    console.log(wrapper.find(Modal).getElement().props.children.props.children)
-
-    //     expect(wrapper.find(Modal).getElement())
-
-
-  })
 
 })
 

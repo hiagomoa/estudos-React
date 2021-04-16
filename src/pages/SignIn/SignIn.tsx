@@ -21,12 +21,16 @@ export function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [data, setData] = useState(false);
-    const [modalSignInisOpen, setModalSignInisOpen] = useState(false);
+    const [notLog, setNotLog] = useState(true)
 
     const auth = useSelector<IState, Data>(state => state.auth);
     const dispatch = useDispatch();
 
-    console.log("REDUX: " +  auth.token)
+    const handleAddLoginUser = useCallback((data: Data) => {
+        dispatch(log_user(data))
+    }, [dispatch])
+
+
     const [dados, setDados] = useState<AuthState>(() => {
         const token = localStorage.getItem('@MeuSite:token');
         const data = localStorage.getItem('@MeuSite:user');
@@ -34,52 +38,52 @@ export function SignIn() {
         if (token && data) {
             //const logged = true;
             //return { store.auth.token, logged, data: JSON.parse(data) };
-            return {token:token, data:JSON.parse(data) }
+            handleAddLoginUser({ token, data: JSON.parse(data) })
+            return { token, data: JSON.parse(data) }
         }
         return {} as AuthState;
     });
     const history = useHistory();
 
-
-    //console.log("TTTTT" +user );
-   
-
-    function handleOpenModal() {
-        setModalSignInisOpen(true)
-    }
-
-    function handleCloseModal() {
-        setModalSignInisOpen(false)
-    }
-
     async function handleActionLogin(event: FormEvent) {
         event.preventDefault();
         console.log("ENTROUUUU")
-        await loginUser(email, password);
+       var log = await loginUser(email, password);
+       if(log == 0){
+           
+           console.log("EEEEEEEEEE? " + notLog)
+       }
+       
         history.push("/dashboard")
     }
 
-   const handleAddLoginUser = useCallback((data:Data)=>{
-        dispatch(log_user(data))
-    }, [dispatch])
-
     async function loginUser(email: String, password: String) {
-
-        await api.post('/auth/searcher', {
+      const retorno =  await api.post('/auth/searcher', {
             "email": email,
             "password": password
         }).then(function (response) {
             const retorno = response.data;
             const { token, data } = response.data;
-            console.log("OPAAAAAAA " + token)
+            console.log("OPAAAAAAA " + JSON.stringify(response))
+            console.log("AAAAAAAA: " + token)
             localStorage.setItem('@MeuSite:token', token);
             localStorage.setItem('@MeuSite:user', JSON.stringify(data));
-            handleAddLoginUser({token, data})
+            setDados({ token, data })
+            handleAddLoginUser({ token, data })
+            return 1
         }).catch(function (error) {
-            console.log(" triste");
+            
+            console.log(" triste" + notLog);
+            return 0
         });
-        
+
+        return retorno
+
     }
+    useEffect(()=>{
+        console.log("NOVO VALOR " + notLog)
+        setNotLog(false)
+    },[dados]) 
     // useEffect(() => {
     //     // console.log("valor do logged: " + logged)
     //     // if (logged == false) {
@@ -114,23 +118,18 @@ export function SignIn() {
                     />
 
                     <button type="submit">Entrar</button>
+                    {!notLog &&
+                        <h2>Email ou senha incorretos</h2>
+                    }
 
                     <a href="forgot">Esqueci minha senha</a>
 
                 </form>
+
                 <Link to="/signup">
                     <FiLogIn />
                     Criar conta
                 </Link>
-                <Modal
-                    isOpen={modalSignInisOpen}
-                    onRequestClose={handleCloseModal}
-                    overlayClassName="react-modal-overlay"
-                    className="react-modal-content"
-                >
-                    <h2 id="input5"
-                        data-testid="text-modal">Login foi mal sucedido</h2>
-                </Modal>
             </Content>
             <Background />
         </Container>
