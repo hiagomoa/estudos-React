@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState, useContext, useCallback } from 'react'
-import Modal from 'react-modal';
 import { Link, useHistory } from 'react-router-dom';
 import { Container, Content, Background } from './styles';
 import { FiLogIn } from 'react-icons/fi'
@@ -36,8 +35,8 @@ export function SignIn() {
         const data = localStorage.getItem('@MeuSite:user');
 
         if (token && data) {
-            //const logged = true;
-            //return { store.auth.token, logged, data: JSON.parse(data) };
+        
+        
             handleAddLoginUser({ token, data: JSON.parse(data) })
             return { token, data: JSON.parse(data) }
         }
@@ -47,7 +46,6 @@ export function SignIn() {
 
     async function handleActionLogin(event: FormEvent) {
         event.preventDefault();
-        console.log("ENTROUUUU")
        var log = await loginUser(email, password);
        if(log == 0){
            
@@ -64,16 +62,13 @@ export function SignIn() {
         }).then(function (response) {
             const retorno = response.data;
             const { token, data } = response.data;
-            console.log("OPAAAAAAA " + JSON.stringify(response))
-            console.log("AAAAAAAA: " + token)
+           
             localStorage.setItem('@MeuSite:token', token);
             localStorage.setItem('@MeuSite:user', JSON.stringify(data));
             setDados({ token, data })
             handleAddLoginUser({ token, data })
             return 1
         }).catch(function (error) {
-            
-            console.log(" triste" + notLog);
             return 0
         });
 
@@ -81,22 +76,13 @@ export function SignIn() {
 
     }
     useEffect(()=>{
-        console.log("NOVO VALOR " + notLog)
         setNotLog(false)
     },[dados]) 
-    // useEffect(() => {
-    //     // console.log("valor do logged: " + logged)
-    //     // if (logged == false) {
-    //     //     handleOpenModal()
-    //     // }
-    //     if (logged == true) {
-    //         history.push("/dashboard")
-    //     }
-    // }, [logged])
+
 
     return (
         <Container>
-            <Content>
+            <Content >
                 <img src={logo} alt="MyLogo" />
                 <form onSubmit={handleActionLogin}>
                     <h1 data-testid="titulo">Faça seu logon</h1>
@@ -126,7 +112,7 @@ export function SignIn() {
 
                 </form>
 
-                <Link to="/signup">
+                <Link to="/signup" data-testid="id-link">
                     <FiLogIn />
                     Criar conta
                 </Link>
